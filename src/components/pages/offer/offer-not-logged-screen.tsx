@@ -1,4 +1,4 @@
-function OfferNotLoggedScreen(): JSX.Element {
+function OfferNotLoggedScreen() {
   return(
     <div className="page">
       <header className="header">

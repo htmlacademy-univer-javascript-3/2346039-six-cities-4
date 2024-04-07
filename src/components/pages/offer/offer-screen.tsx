@@ -1,4 +1,4 @@
-function OfferScreen(): JSX.Element {
+function OfferScreen() {
   return(
     <div className="page">
       <header className="header">

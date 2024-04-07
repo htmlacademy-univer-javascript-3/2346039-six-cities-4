@@ -1,4 +1,4 @@
-function FavoritesScreen(): JSX.Element {
+function FavoritesScreen() {
   return(
     <div className="page">
       <header className="header">

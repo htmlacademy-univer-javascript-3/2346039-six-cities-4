@@ -1,4 +1,4 @@
-function LoginScreen(): JSX.Element {
+function LoginScreen() {
   return(
     <div className="page page--gray page--login">
       <header className="header">

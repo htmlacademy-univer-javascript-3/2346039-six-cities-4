@@ -16,3 +16,6 @@ root.render(
     <App cardsNumber={Setting.cardsNumber} offers = {offers}/>
   </React.StrictMode>
 );
+
+
+export default Setting;

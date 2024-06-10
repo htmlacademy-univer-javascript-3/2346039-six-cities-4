@@ -28,7 +28,7 @@ export const fetchOffersAsync = createAsyncThunk<void, undefined, ThunkConfig>('
   dispatch(updateLoading(false));
 });
 
-export const fetchAuth = createAsyncThunk<void, undefined, ThunkConfig>('auth/fetchAuth', async (_, {extra, dispatch}) => {
+export const fetchAuthAsync = createAsyncThunk<void, undefined, ThunkConfig>('auth/fetchAuth', async (_, {extra, dispatch}) => {
   const response = await extra.get<User>('/login');
   if (response.status === 401) {
     dispatch(signOut());
@@ -39,7 +39,7 @@ export const fetchAuth = createAsyncThunk<void, undefined, ThunkConfig>('auth/fe
   }
 });
 
-export const login = createAsyncThunk<void, { email: string; password: string }, ThunkConfig>('auth/login', async (
+export const loginAsync = createAsyncThunk<void, { email: string; password: string }, ThunkConfig>('auth/login', async (
   { email, password },
   { extra, dispatch }
 ) => {
@@ -54,16 +54,15 @@ export const login = createAsyncThunk<void, { email: string; password: string },
   }
 });
 
-export const logout = createAsyncThunk<void, undefined, ThunkConfig>('auth/logout', async (_, { extra, dispatch }) => {
-  const response = await extra.delete('/logout');
-  if (response.status === 204) {
-    dispatch(signOut());
-  }
-  localStorage.removeItem(LOCAL_STORAGE_TOKEN);
+export const logoutAsync = createAsyncThunk<void, undefined, ThunkConfig>('auth/logout', async (_, { extra, dispatch }) => {
+  await extra.delete('/logout');
+  dispatch(signOut());
+  dispatch(fetchOffersAsync());
+  localStorage.removeItem('six-cities-token');
 });
 
 
-export const fetchFavorites = createAsyncThunk<void, undefined, ThunkConfig>('favorites/fetchFavorites', async (
+export const fetchFavoritesAsync = createAsyncThunk<void, undefined, ThunkConfig>('favorites/fetchFavorites', async (
   _,
   { extra, dispatch }
 ) => {
@@ -75,7 +74,7 @@ export const fetchFavorites = createAsyncThunk<void, undefined, ThunkConfig>('fa
   }
 });
 
-export const updateOfferFavoriteStatus = createAsyncThunk<boolean, { id: string; status: boolean}, ThunkConfig>('favorites/changeOfferFavoriteStatus', async (
+export const updateOfferFavoriteStatusAsync = createAsyncThunk<boolean, { id: string; status: boolean}, ThunkConfig>('favorites/changeOfferFavoriteStatus', async (
   { id, status },
   { extra, dispatch }
 ) => {

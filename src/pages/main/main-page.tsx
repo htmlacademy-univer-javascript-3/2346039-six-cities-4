@@ -7,6 +7,7 @@ import { useAppSelector } from '../../store/helpers';
 import { CityPicker } from '../../components/city-picker';
 import { CITIES } from '../../const';
 import { Spinner } from '../../components/spinner';
+import { NoOffersView } from './components/no-offers-view';
 
 export const MainPage: FC = () => {
   const [activePoint, setActivePoint] = useState<Point>();
@@ -37,14 +38,20 @@ export const MainPage: FC = () => {
         <h1 className="visually-hidden">Cities</h1>
         <CityPicker cities={CITIES} />
         <div className="cities">
-          <div className="cities__places-container container">
-            <OfferCardList offers={offers ?? []} setActivePoint={setActivePoint}
-              points={points}
-            />
-            <div className="cities__right-section">
-              <Map city={activeCity} points={points} selectedPoint={activePoint} className='cities__map' />
-            </div>
-          </div>
+          {
+            offers.length > 0 ? (
+              <div className="cities__places-container container">
+                <OfferCardList offers={offers ?? []} setActivePoint={setActivePoint}
+                  points={points}
+                />
+                <div className="cities__right-section">
+                  <Map city={activeCity} points={points} selectedPoint={activePoint} className='cities__map' />
+                </div>
+              </div>
+            ) : (
+              <NoOffersView activeCityName={activeCity.name} />
+            )
+          }
         </div>
       </main>
     </div>

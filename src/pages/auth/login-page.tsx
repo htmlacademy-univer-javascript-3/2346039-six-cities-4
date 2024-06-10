@@ -1,6 +1,6 @@
 import { FC, FormEvent, useCallback, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../../store/helpers';
-import { login } from '../../store/action';
+import { loginAsync } from '../../store/action';
 import { Link, Navigate } from 'react-router-dom';
 import { selectAuthStatus } from '../../store/selectors';
 import { AuthStatus } from '../../types/auth-status';
@@ -16,7 +16,7 @@ export const LoginPage: FC = () => {
 
   const handleSumbit = useCallback((e: FormEvent) => {
     e.preventDefault();
-    dispatch(login({ email, password }));
+    dispatch(loginAsync({ email, password }));
   }, [email, password, dispatch]);
 
   if (authStatus === AuthStatus.LOGGED_IN) {

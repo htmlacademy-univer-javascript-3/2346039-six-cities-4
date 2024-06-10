@@ -2,7 +2,7 @@ import { FC } from 'react';
 import { Link } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../store/helpers';
 import { selectFavoritesLength, selectUser } from '../store/selectors';
-import { logout } from '../store/action';
+import { logoutAsync } from '../store/action';
 import { AppRoute } from '../types/app-route';
 
 export const HeaderView: FC = () => {
@@ -14,7 +14,7 @@ export const HeaderView: FC = () => {
   const dispatch = useAppDispatch();
 
   const handleLogout = () => {
-    dispatch(logout());
+    dispatch(logoutAsync());
   };
 
   return (

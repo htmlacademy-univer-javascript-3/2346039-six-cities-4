@@ -1,5 +1,5 @@
 /* eslint-disable no-console */
-import { ChangeEvent, FC, FormEvent, useEffect, useState } from 'react';
+import { ChangeEvent, FC, FormEvent, useCallback, useEffect, useState } from 'react';
 import { Comment } from '../../../types/comment';
 
 type WriteReviewFormProps = {
@@ -35,11 +35,11 @@ export const WriteReviewForm: FC<WriteReviewFormProps> = ({onSend}) => {
     setButtonDisabled(review.comment.length < 50 || review.rating === 0);
   }, [review.rating, review.comment]);
 
-  const handleFormSubmit = (e: FormEvent) => {
+  const handleFormSubmit = useCallback((e: FormEvent) => {
     e.preventDefault();
     onSend(review);
     setReview((prev) => ({...prev, comment: ''}));
-  };
+  }, [review, onSend]);
 
   return (
     <form className="reviews__form form" action="#" method="post">

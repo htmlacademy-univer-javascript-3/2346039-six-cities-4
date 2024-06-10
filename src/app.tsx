@@ -11,6 +11,7 @@ import { Offer } from './types/offer';
 import { OfferDetail } from './types/offer-detail';
 import { Review } from './types/review';
 import { User } from './types/user';
+import { MainLayout } from './layouts/main-layout';
 
 type AppProps = {
     offers: Offer[];
@@ -23,12 +24,22 @@ type AppProps = {
 export const App: FC<AppProps> = ({ offers, offersDetail, reviewsMap, user, favorites }) => (
   <BrowserRouter>
     <Routes>
-      <Route path={AppRoute.Index} element={<MainPage offers={offers} user={user} favoriteCount={favorites.length} />} />
+      <Route path={AppRoute.Index} element={
+        <MainLayout color="gray" user={user} favoriteCount={favorites.length}>
+          <MainPage offers={offers} />
+        </MainLayout>
+      } />
       <Route path={AppRoute.Login} element={<LoginPage />} />
-      <Route path={AppRoute.Offer} element={<OfferPage offerDetails={offersDetail} reviewsMap={reviewsMap} />} />
+      <Route path={AppRoute.Offer} element={
+        <MainLayout user={user} favoriteCount={favorites.length}>
+          <OfferPage offerDetails={offersDetail} reviewsMap={reviewsMap} />
+        </MainLayout>
+      } />
       <Route path={AppRoute.Favorites} element={
         <PrivateRoute user={user}>
-          <FavoritesPage offers={offers} user={user} favorites={favorites} />
+          <MainLayout user={user} favoriteCount={favorites.length} >
+            <FavoritesPage offers={offers} user={user} favorites={favorites} />
+          </MainLayout>
         </PrivateRoute>
       }
       />

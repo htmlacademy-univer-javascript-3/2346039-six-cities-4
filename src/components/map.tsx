@@ -6,11 +6,13 @@ import 'leaflet/dist/leaflet.css';
 import { City } from '../types/city'
 import { Point } from '../types/point';
 import { URL_MARKER_CURRENT, URL_MARKER_DEFAULT } from '../const';
+import classNames from 'classnames';
 
 interface MapProps {
   city: City;
   points: Point[];
   selectedPoint: Point | undefined;
+  className?: string;
 }
 
 const defaultCustomIcon = new Icon({
@@ -55,5 +57,5 @@ export const Map: FC<MapProps> = (props) => {
     }
   }, [map, points, selectedPoint]);
 
-  return <div className="cities__map map" ref={mapRef}></div>;
+  return <div className={classNames('map', props.className)} ref={mapRef}></div>;
 };

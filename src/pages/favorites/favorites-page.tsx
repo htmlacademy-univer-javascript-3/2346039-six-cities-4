@@ -1,8 +1,9 @@
 import { FC } from 'react';
 import { Offer } from '../../types/offer';
-import { HeaderView } from '../../components/header';
 import { User } from '../../types/user';
-import { FavoritesCardList } from './components/favorites-card-list';
+import { FavoritesCardList } from '../../components/favorites-card-list';
+import { AppRoute } from '../../types/app-route';
+import { Link } from 'react-router-dom';
 
 type FavoritesPageProps = {
     offers: Offer[];
@@ -15,39 +16,16 @@ export const FavoritesPage: FC<FavoritesPageProps> = ({ offers, user, favorites 
 
   return (
     <div className="page">
-      <HeaderView user={user} favoriteCount={favoriteOffers.length} />
       <main className="page__main page__main--favorites">
         <div className="page__favorites-container container">
           <section className="favorites">
             <h1 className="favorites__title">Saved listing</h1>
-            <ul className="favorites__list">
-              <li className="favorites__locations-items">
-                <div className="favorites__locations locations locations--current">
-                  <div className="locations__item">
-                    <a className="locations__item-link" href="#">
-                      <span>Amsterdam</span>
-                    </a>
-                  </div>
-                </div>
-                <FavoritesCardList offers={favoriteOffers} />
-              </li>
-
-              <li className="favorites__locations-items">
-                <div className="favorites__locations locations locations--current">
-                  <div className="locations__item">
-                    <a className="locations__item-link" href="#">
-                      <span>Cologne</span>
-                    </a>
-                  </div>
-                </div>
-                <FavoritesCardList offers={favoriteOffers} />
-              </li>
-            </ul>
+            <FavoritesCardList offers={favoriteOffers} />
           </section>
         </div>
       </main>
       <footer className="footer container">
-        <a className="footer__logo-link" href="main.html">
+        <Link className="footer__logo-link" to={AppRoute.Index}>
           <img
             className="footer__logo"
             src="img/logo.svg"
@@ -55,7 +33,7 @@ export const FavoritesPage: FC<FavoritesPageProps> = ({ offers, user, favorites 
             width="64"
             height="33"
           />
-        </a>
+        </Link>
       </footer>
     </div>
   );

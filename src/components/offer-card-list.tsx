@@ -2,24 +2,29 @@ import { FC } from 'react';
 import { Offer } from '../types/offer';
 import { OfferCard } from './offer-card';
 import { Point } from '../types/point';
-import { City } from '../types/city';
 import classNames from 'classnames';
 import { getOfferCardClassName } from '../utils/offer-card-classname';
+import { useAppDispatch, useAppSelector } from '../store/helpers';
+import { selectCurrentCity } from '../store/selectors';
+import { updateCity } from '../store/action';
 
 type OfferCardListProps = {
     offers: Offer[];
-    setActiveCity?: (city: City) => void;
     setActivePoint: (point?: Point) => void;
     points: Point[];
     prefix?: string;
 }
 
-export const OfferCardList: FC<OfferCardListProps> = ({ offers, setActiveCity, setActivePoint, points, prefix = 'cities' }) => {
+export const OfferCardList: FC<OfferCardListProps> = ({ offers, setActivePoint, points, prefix = 'cities' }) => {
+  const dispatch = useAppDispatch();
+
+  const activeCity = useAppSelector(selectCurrentCity);
+
   const handleCardFocus = (id: string) => {
     const point = points.find((p) => p.id === id);
     const city = offers.find((offer) => offer.id === id)?.city;
     if (city) {
-      setActiveCity?.(city);
+      dispatch(updateCity(city));
     }
     if (point) {
       setActivePoint(point);
@@ -34,7 +39,7 @@ export const OfferCardList: FC<OfferCardListProps> = ({ offers, setActiveCity, s
     <section className={classNames(getOfferCardClassName(prefix, 'places'), 'places')}>
       <h2 className="visually-hidden">Places</h2>
       <b className="places__found">
-        {offers?.length ?? 0} places to stay in Amsterdam
+        {offers?.length ?? 0} places to stay in {activeCity.name}
       </b>
       <form className="places__sorting" action="#" method="get">
         <span className="places__sorting-caption">Sort by</span>

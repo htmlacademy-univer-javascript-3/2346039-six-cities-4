@@ -20,16 +20,8 @@ export const OfferPage: FC<OfferPageProps> = ({ offerDetails, reviewsMap }) => {
   const { id } = useParams();
   const offer = offerDetails.find((it) => String(it.id) === id);
 
-  if (!offer) {
-    return <Navigate to="/not_found" />;
-  }
-
   // TODO: Remove direct mock data access
   const offers = MOCK_OFFERS.slice(0, 2);
-
-  const reviews = reviewsMap.get(offer.id);
-
-  const [activePoint, setActivePoint] = useState<Point>();
 
   const points = useMemo<Point[]>(
     () =>
@@ -41,6 +33,13 @@ export const OfferPage: FC<OfferPageProps> = ({ offerDetails, reviewsMap }) => {
       })) ?? [],
     [offers]
   );
+  const [activePoint, setActivePoint] = useState<Point>();
+
+  if (!offer) {
+    return <Navigate to="/not_found" />;
+  }
+
+  const reviews = reviewsMap.get(offer.id);
 
   const handleCardMouseEnter = (placeId: string) => {
     const point = points.find((p) => p.id === placeId);

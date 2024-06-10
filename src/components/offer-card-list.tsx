@@ -5,10 +5,13 @@ import { Point } from '../types/point';
 import classNames from 'classnames';
 import { getOfferCardClassName } from '../utils/offer-card-classname';
 import { useAppDispatch, useAppSelector } from '../store/helpers';
-import { selectCurrentCity, selectCurrentSortMethod } from '../store/selectors';
-import { updateCity, updateOfferFavoriteStatus, updateSingleOfferFavorite } from '../store/action';
+import { selectAuthStatus, selectCurrentCity, selectCurrentSortMethod } from '../store/selectors';
+import { updateCity, updateOfferFavoriteStatusAsync, updateSingleOfferFavorite } from '../store/action';
 import { SortMethod } from '../types/sort-method';
 import { SortFormView } from './sort-form';
+import { useNavigate } from 'react-router-dom';
+import { AppRoute } from '../types/app-route';
+import { AuthStatus } from '../types/auth-status';
 
 type OfferCardListProps = {
     offers: Offer[];
@@ -23,6 +26,10 @@ export const OfferCardList: FC<OfferCardListProps> = ({ offers, setActivePoint, 
   const activeCity = useAppSelector(selectCurrentCity);
 
   const selectedSortMethod = useAppSelector(selectCurrentSortMethod);
+
+  const authStatus = useAppSelector(selectAuthStatus);
+
+  const navigate = useNavigate();
 
   const [sortedOffers, setSortedOffers] = useState(offers);
 
@@ -62,10 +69,14 @@ export const OfferCardList: FC<OfferCardListProps> = ({ offers, setActivePoint, 
   };
 
   const handleFavoriteClick = useCallback((id: string, status: boolean) => {
-    dispatch(updateOfferFavoriteStatus({id, status})).then((result) => {
+    if (authStatus !== AuthStatus.LOGGED_IN) {
+      navigate(AppRoute.Login);
+      return;
+    }
+    dispatch(updateOfferFavoriteStatusAsync({id, status})).then((result) => {
       dispatch(updateSingleOfferFavorite({id, status: result.payload as boolean}));
     });
-  }, [dispatch]);
+  }, [dispatch, authStatus, navigate]);
 
   return (
     <section className={classNames(getOfferCardClassName(prefix, 'places'), 'places')}>

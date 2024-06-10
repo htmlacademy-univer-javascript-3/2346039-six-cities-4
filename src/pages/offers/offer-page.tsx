@@ -1,6 +1,6 @@
 /* eslint-disable react/no-array-index-key */
 import { FC, useCallback, useEffect, useMemo, useState } from 'react';
-import { Navigate, useParams } from 'react-router-dom';
+import { Navigate, useNavigate, useParams } from 'react-router-dom';
 import { WriteReviewForm } from './components/write-review-form';
 import { Point } from '../../types/point';
 import { OfferGallery } from '../../components/offer-gallery';
@@ -11,15 +11,18 @@ import { useGetOfferDetail } from '../../hooks/use-get-offer-detail';
 import { Spinner } from '../../components/spinner';
 import { useAppDispatch, useAppSelector } from '../../store/helpers';
 import { selectAuthStatus } from '../../store/selectors';
-import { updateOfferFavoriteStatus } from '../../store/action';
+import { updateOfferFavoriteStatusAsync } from '../../store/action';
 import { AuthStatus } from '../../types/auth-status';
 import useMutation from '../../hooks/use-mutation';
 import { Review } from '../../types/review';
+import { AppRoute } from '../../types/app-route';
 
 export const OfferPage: FC = () => {
   const { id } = useParams();
 
   const {offerDetail: offer, reviews, nearbyOffers, isLoading, addReview, changeOfferIsFavorite} = useGetOfferDetail({ id: id ?? '' });
+
+  const navigate = useNavigate();
 
   const authStatus = useAppSelector(selectAuthStatus);
 
@@ -44,13 +47,17 @@ export const OfferPage: FC = () => {
   }, [offer?.isFavorite]);
 
   const handleFavoriteClick = useCallback(() => {
-    dispatch(updateOfferFavoriteStatus({id: id ?? '', status: !isOfferInFavorites})).then((result) => {
+    if (authStatus !== AuthStatus.LOGGED_IN) {
+      navigate(AppRoute.Login);
+      return;
+    }
+    dispatch(updateOfferFavoriteStatusAsync({id: id ?? '', status: !isOfferInFavorites})).then((result) => {
       setIsOfferInFavorites(result.payload as boolean);
     });
-  }, [id, isOfferInFavorites, dispatch]);
+  }, [id, isOfferInFavorites, dispatch, authStatus, navigate]);
 
   const handleNearbyOfferFavoriteClick = useCallback((nearbyOfferId: string, status: boolean) => {
-    dispatch(updateOfferFavoriteStatus({id: nearbyOfferId, status})).then((result) => {
+    dispatch(updateOfferFavoriteStatusAsync({id: nearbyOfferId, status})).then((result) => {
       changeOfferIsFavorite?.(nearbyOfferId, result.payload as boolean);
     });
   }, [dispatch, changeOfferIsFavorite]);

@@ -1,7 +1,7 @@
 import { FC, useCallback } from 'react';
 import { Offer } from '../types/offer';
 import { OfferCard } from './offer-card';
-import { updateOfferFavoriteStatus, updateSingleOfferFavorite } from '../store/action';
+import { updateOfferFavoriteStatusAsync, updateSingleOfferFavorite } from '../store/action';
 import { useAppDispatch } from '../store/helpers';
 
 type FavoritesCardListProps = {
@@ -16,7 +16,7 @@ export const FavoritesCardList: FC<FavoritesCardListProps> = ({ offers }) => {
   const dispatch = useAppDispatch();
 
   const handleFavoriteClick = useCallback((id: string, status: boolean) => {
-    dispatch(updateOfferFavoriteStatus({id, status})).then((result) => {
+    dispatch(updateOfferFavoriteStatusAsync({id, status})).then((result) => {
       dispatch(updateSingleOfferFavorite({id, status: result.payload as boolean}));
     });
   }, [dispatch]);

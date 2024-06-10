@@ -3,6 +3,8 @@ import { useAppSelector } from '../../store/helpers';
 import { Spinner } from '../../components/spinner';
 import { selectFavorites, selectFavoritesLoadingStatus } from '../../store/selectors';
 import { FavoritesCardList } from '../../components/favorites-card-list';
+import { Link } from 'react-router-dom';
+import { AppRoute } from '../../types/app-route';
 
 export const FavoritesPage: FC = () => {
   const offers = useAppSelector(selectFavorites);
@@ -31,7 +33,7 @@ export const FavoritesPage: FC = () => {
         </div>
       </main>
       <footer className="footer container">
-        <a className="footer__logo-link" href="main.html">
+        <Link className="footer__logo-link" to={AppRoute.Index}>
           <img
             className="footer__logo"
             src="img/logo.svg"
@@ -39,7 +41,7 @@ export const FavoritesPage: FC = () => {
             width="64"
             height="33"
           />
-        </a>
+        </Link>
       </footer>
     </div>
   );

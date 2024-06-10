@@ -39,29 +39,6 @@ export const fetchAuthAsync = createAsyncThunk<void, undefined, ThunkConfig>('au
   }
 });
 
-export const loginAsync = createAsyncThunk<void, { email: string; password: string }, ThunkConfig>('auth/login', async (
-  { email, password },
-  { extra, dispatch }
-) => {
-  dispatch(updateAuthStatus(AuthStatus.LOADING));
-  const response = await extra.post<User>('/login', { email, password });
-  if (response.status === 201) {
-    dispatch(signIn(response.data));
-    if (response.data.token) {
-      localStorage.setItem(LOCAL_STORAGE_TOKEN, response.data.token);
-    }
-    dispatch(updateAuthStatus(AuthStatus.LOGGED_IN));
-  }
-});
-
-export const logoutAsync = createAsyncThunk<void, undefined, ThunkConfig>('auth/logout', async (_, { extra, dispatch }) => {
-  await extra.delete('/logout');
-  dispatch(signOut());
-  dispatch(fetchOffersAsync());
-  localStorage.removeItem('six-cities-token');
-});
-
-
 export const fetchFavoritesAsync = createAsyncThunk<void, undefined, ThunkConfig>('favorites/fetchFavorites', async (
   _,
   { extra, dispatch }
@@ -88,4 +65,28 @@ export const updateOfferFavoriteStatusAsync = createAsyncThunk<boolean, { id: st
     return false;
   }
   return status;
+});
+
+export const loginAsync = createAsyncThunk<void, { email: string; password: string }, ThunkConfig>('auth/login', async (
+  { email, password },
+  { extra, dispatch }
+) => {
+  dispatch(updateAuthStatus(AuthStatus.LOADING));
+  const response = await extra.post<User>('/login', { email, password });
+  if (response.status === 201) {
+    dispatch(signIn(response.data));
+    if (response.data.token) {
+      localStorage.setItem(LOCAL_STORAGE_TOKEN, response.data.token);
+    }
+    dispatch(updateAuthStatus(AuthStatus.LOGGED_IN));
+    dispatch(fetchOffersAsync());
+    dispatch(fetchFavoritesAsync());
+  }
+});
+
+export const logoutAsync = createAsyncThunk<void, undefined, ThunkConfig>('auth/logout', async (_, { extra, dispatch }) => {
+  await extra.delete('/logout');
+  dispatch(signOut());
+  localStorage.removeItem('six-cities-token');
+  dispatch(fetchOffersAsync());
 });

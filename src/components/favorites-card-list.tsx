@@ -36,4 +36,4 @@ export const FavoritesCardList: FC<FavoritesCardListProps> = ({ offers }) => {
       })}
     </div>
   );
-}
+};

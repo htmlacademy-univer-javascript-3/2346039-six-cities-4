@@ -1,17 +1,15 @@
 import { FC } from 'react';
 import { Offer } from '../../types/offer';
-import { User } from '../../types/user';
 import { FavoritesCardList } from '../../components/favorites-card-list';
 import { AppRoute } from '../../types/app-route';
 import { Link } from 'react-router-dom';
 
 type FavoritesPageProps = {
     offers: Offer[];
-    user: User;
     favorites: string[];
 }
 
-export const FavoritesPage: FC<FavoritesPageProps> = ({ offers, user, favorites }) => {
+export const FavoritesPage: FC<FavoritesPageProps> = ({ offers, favorites }) => {
   const favoriteOffers = offers.filter((it) => favorites.indexOf(it.id) !== -1);
 
   return (

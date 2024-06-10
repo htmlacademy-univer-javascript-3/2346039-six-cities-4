@@ -1,0 +1,6 @@
+export enum SortMethod {
+    POPULAR = 'POPULAR',
+    TOP_RATED = 'TOP_RATED',
+    PRICE_LOW_TO_HIGH = 'PRICE_LOW_TO_HIGH',
+    PRICE_HIGH_TO_LOW = 'PRICE_HIGH_TO_LOW'
+}

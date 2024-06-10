@@ -1,14 +1,21 @@
-import { FC, FormEvent, useCallback, useState } from 'react';
+import { FC, FormEvent, useCallback, useMemo, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../../store/helpers';
-import { loginAsync } from '../../store/action';
+import { loginAsync, updateCity } from '../../store/action';
 import { Link, Navigate } from 'react-router-dom';
 import { selectAuthStatus } from '../../store/selectors';
 import { AuthStatus } from '../../types/auth-status';
 import { AppRoute } from '../../types/app-route';
+import { City } from '../../types/city';
 
-export const LoginPage: FC = () => {
+type LoginPageProps = {
+  cities: City[];
+}
+
+export const LoginPage: FC<LoginPageProps> = ({ cities }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+
+  const randomCity = useMemo(() => cities[Math.floor(Math.random() * cities.length)], [cities]);
 
   const dispatch = useAppDispatch();
 
@@ -18,6 +25,10 @@ export const LoginPage: FC = () => {
     e.preventDefault();
     dispatch(loginAsync({ email, password }));
   }, [email, password, dispatch]);
+
+  const handleCityClick = useCallback((city: City) => {
+    dispatch(updateCity(city));
+  }, [dispatch]);
 
   if (authStatus === AuthStatus.LOGGED_IN) {
     return (
@@ -80,10 +91,10 @@ export const LoginPage: FC = () => {
             </form>
           </section>
           <section className="locations locations--login locations--current">
-            <div className="locations__item">
-              <a className="locations__item-link" href="#">
-                <span>Amsterdam</span>
-              </a>
+            <div className="locations__item" onClick={() => handleCityClick(randomCity)}>
+              <Link className="locations__item-link" to={AppRoute.Index}>
+                <span>{randomCity.name}</span>
+              </Link>
             </div>
           </section>
         </div>

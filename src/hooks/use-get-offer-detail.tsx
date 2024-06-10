@@ -2,7 +2,8 @@ import { useEffect, useState } from 'react';
 import { OfferDetail } from '../types/offer-detail';
 import { Review } from '../types/review';
 import { Offer } from '../types/offer';
-import { useApiRequest } from './use-api-request';
+import { useQuery } from '@tanstack/react-query';
+import { ApiService } from '../services/api-service';
 
 type useGetOfferDetailParams = {
   id: string;
@@ -21,9 +22,20 @@ export const useGetOfferDetail = ({id}: useGetOfferDetailParams): useGetOfferDet
   const [reviews, setReviews] = useState<Review[]>([]);
   const [nearbyOffers, setNearbyOffers] = useState<Offer[]>([]);
 
-  const {data: offerDetail, loading: isOfferLoading} = useApiRequest<OfferDetail>(`/offers/${id}`);
-  const {data: reviewsRaw, loading: isReviewsLoading} = useApiRequest<Review[]>(`/comments/${id}`);
-  const {data: nearbyOffersRaw, loading: isNearbyOffersLoading} = useApiRequest<Offer[]>(`/offers/${id}/nearby`);
+  const { isLoading: isOfferLoading, data: offerDetail } = useQuery({
+    queryKey: ['offer', id],
+    queryFn: async () => (await ApiService.get<OfferDetail>(`/offers/${id}`)).data
+  });
+
+  const { isLoading: isReviewsLoading, data: reviewsRaw } = useQuery({
+    queryKey: ['reviews', id],
+    queryFn: async () => (await ApiService.get<Review[]>(`/comments/${id}`)).data
+  });
+
+  const { isLoading: isNearbyOffersLoading, data: nearbyOffersRaw } = useQuery({
+    queryKey: ['nearby', id],
+    queryFn: async () => (await ApiService.get<Offer[]>(`/offers/${id}/nearby`)).data
+  });
 
   useEffect(() => {
     if (reviewsRaw) {

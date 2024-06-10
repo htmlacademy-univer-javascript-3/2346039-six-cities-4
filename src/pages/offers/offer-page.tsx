@@ -13,9 +13,10 @@ import { useAppDispatch, useAppSelector } from '../../store/helpers';
 import { selectAuthStatus } from '../../store/selectors';
 import { updateOfferFavoriteStatusAsync } from '../../store/action';
 import { AuthStatus } from '../../types/auth-status';
-import useMutation from '../../hooks/use-mutation';
-import { Review } from '../../types/review';
 import { AppRoute } from '../../types/app-route';
+import { useMutation } from '@tanstack/react-query';
+import { ApiService } from '../../services/api-service';
+import { Review } from '../../types/review';
 
 export const OfferPage: FC = () => {
   const { id } = useParams();
@@ -62,10 +63,13 @@ export const OfferPage: FC = () => {
     });
   }, [dispatch, changeOfferIsFavorite]);
 
-  const [mutate] = useMutation<Review>(`/comments/${id}`, 'POST', {
-    onSuccess: (data) => {
-      addReview(data);
-    },
+  const reviewMutation = useMutation({
+    mutationFn: async (review: string) => {
+      const result = await ApiService.post<Review>(`/comments/${id}`, review, {headers: {
+        'Content-Type': 'application/json',
+      }});
+      addReview(result.data);
+    }
   });
 
   const handleCardMouseEnter = useCallback((placeId: string) => {
@@ -177,7 +181,7 @@ export const OfferPage: FC = () => {
                 {
                   authStatus === AuthStatus.LOGGED_IN && (
                     <WriteReviewForm onSend={(comment) => {
-                      mutate(JSON.stringify(comment));
+                      reviewMutation.mutate(JSON.stringify(comment));
                     }}
                     />
                   )

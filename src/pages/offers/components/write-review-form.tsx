@@ -143,6 +143,7 @@ export const WriteReviewForm: FC<WriteReviewFormProps> = ({onSend}) => {
         name="comment"
         placeholder="Tell how was your stay, what you like and what can be improved"
         onChange={onChange}
+        value={review.comment}
       />
       <div className="reviews__button-wrapper">
         <p className="reviews__help">

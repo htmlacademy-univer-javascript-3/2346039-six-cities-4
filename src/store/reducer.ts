@@ -19,7 +19,7 @@ type StoreState = {
 }
 
 const initState: StoreState = {
-  city: CITIES[3],
+  city: CITIES[0],
   offers: [],
   sortMethod: SortMethod.POPULAR,
   isLoading: true,

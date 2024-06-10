@@ -1,4 +1,4 @@
-import { FC, FormEvent, useState } from 'react';
+import { FC, FormEvent, useCallback, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../../store/helpers';
 import { login } from '../../store/action';
 import { Link, Navigate } from 'react-router-dom';
@@ -14,10 +14,10 @@ export const LoginPage: FC = () => {
 
   const authStatus = useAppSelector(selectAuthStatus);
 
-  const handleSumbit = (evt: FormEvent) => {
-    evt.preventDefault();
+  const handleSumbit = useCallback((e: FormEvent) => {
+    e.preventDefault();
     dispatch(login({ email, password }));
-  };
+  }, [email, password, dispatch]);
 
   if (authStatus === AuthStatus.LOGGED_IN) {
     return (

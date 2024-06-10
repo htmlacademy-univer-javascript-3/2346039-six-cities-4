@@ -61,6 +61,16 @@ export const OfferPage: FC = () => {
     },
   });
 
+  const handleCardMouseEnter = useCallback((placeId: string) => {
+    const point = points.find((p) => p.id === placeId);
+    if (point) {
+      setActivePoint(point);
+    }
+  }, [points]);
+
+  const handleCardMouseLeave = useCallback(() => {
+    setActivePoint(undefined);
+  }, []);
 
   if (isLoading) {
     return (
@@ -75,17 +85,6 @@ export const OfferPage: FC = () => {
   if (!offer) {
     return null;
   }
-
-  const handleCardMouseEnter = (placeId: string) => {
-    const point = points.find((p) => p.id === placeId);
-    if (point) {
-      setActivePoint(point);
-    }
-  };
-
-  const handleCardMouseLeave = () => {
-    setActivePoint(undefined);
-  };
 
   return (
     <div className="page">

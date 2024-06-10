@@ -13,11 +13,13 @@ import { useAppDispatch, useAppSelector } from '../../store/helpers';
 import { selectAuthStatus } from '../../store/selectors';
 import { updateOfferFavoriteStatus } from '../../store/action';
 import { AuthStatus } from '../../types/auth-status';
+import useMutation from '../../hooks/use-mutation';
+import { Review } from '../../types/review';
 
 export const OfferPage: FC = () => {
   const { id } = useParams();
 
-  const {offerDetail: offer, reviews, nearbyOffers, isLoading} = useGetOfferDetail({ id: id ?? '' });
+  const {offerDetail: offer, reviews, nearbyOffers, isLoading, addReview, changeOfferIsFavorite} = useGetOfferDetail({ id: id ?? '' });
 
   const authStatus = useAppSelector(selectAuthStatus);
 
@@ -46,6 +48,19 @@ export const OfferPage: FC = () => {
       setIsOfferInFavorites(result.payload as boolean);
     });
   }, [id, isOfferInFavorites, dispatch]);
+
+  const handleNearbyOfferFavoriteClick = useCallback((nearbyOfferId: string, status: boolean) => {
+    dispatch(updateOfferFavoriteStatus({id: nearbyOfferId, status})).then((result) => {
+      changeOfferIsFavorite?.(nearbyOfferId, result.payload as boolean);
+    });
+  }, [dispatch, changeOfferIsFavorite]);
+
+  const [mutate] = useMutation<Review>(`/comments/${id}`, 'POST', {
+    onSuccess: (data) => {
+      addReview(data);
+    },
+  });
+
 
   if (isLoading) {
     return (
@@ -154,7 +169,12 @@ export const OfferPage: FC = () => {
               <section className="offer__reviews reviews">
                 <ReviewsList reviews={reviews} />
                 {
-                  authStatus === AuthStatus.LOGGED_IN && (<WriteReviewForm />)
+                  authStatus === AuthStatus.LOGGED_IN && (
+                    <WriteReviewForm onSend={(comment) => {
+                      mutate(JSON.stringify(comment));
+                    }}
+                    />
+                  )
                 }
               </section>
             </div>
@@ -176,6 +196,7 @@ export const OfferPage: FC = () => {
                       onMouseEnter={() => handleCardMouseEnter(item.id)}
                       onMouseLeave={handleCardMouseLeave}
                       offer={item}
+                      onFavoriteClick={handleNearbyOfferFavoriteClick}
                     />
                   ))}
                 </div>

@@ -2,7 +2,7 @@ import { FC } from 'react';
 import { Review } from '../../../types/review';
 import { ReviewItem } from './review-item';
 
-interface ReviewsListProps {
+type ReviewsListProps = {
   reviews: Review[] | undefined;
 }
 

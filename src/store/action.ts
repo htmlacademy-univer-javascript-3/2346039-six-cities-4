@@ -19,6 +19,7 @@ export const addToFavorites = createAction<Offer>('favorites/add');
 export const removeFromFavorites = createAction<string>('favorites/remove');
 export const updateFavorites = createAction<Offer[]>('favorites/change');
 export const updateFavoritesLoadingStatus = createAction<boolean>('favorites/loading_status');
+export const updateSingleOfferFavorite = createAction<{id: string; status: boolean}>('favorites/update_single_favorite');
 
 export const fetchOffersAsync = createAsyncThunk<void, undefined, ThunkConfig>('offers/fetchOffersAsync', async (_,{extra, dispatch}) => {
   dispatch(updateLoading(true));

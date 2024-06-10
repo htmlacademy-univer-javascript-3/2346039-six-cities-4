@@ -1,7 +1,7 @@
 import { FC, PropsWithChildren } from 'react';
 import { HeaderView } from '../components/header';
 
-interface MainLayoutProps {
+type MainLayoutProps = {
   color?: string;
 }
 

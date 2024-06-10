@@ -1,4 +1,4 @@
-import { FC, useEffect, useState } from 'react';
+import { FC, useCallback, useEffect, useState } from 'react';
 import { Offer } from '../types/offer';
 import { OfferCard } from './offer-card';
 import { Point } from '../types/point';
@@ -6,7 +6,7 @@ import classNames from 'classnames';
 import { getOfferCardClassName } from '../utils/offer-card-classname';
 import { useAppDispatch, useAppSelector } from '../store/helpers';
 import { selectCurrentCity, selectCurrentSortMethod } from '../store/selectors';
-import { updateCity } from '../store/action';
+import { updateCity, updateOfferFavoriteStatus, updateSingleOfferFavorite } from '../store/action';
 import { SortMethod } from '../types/sort-method';
 import { SortFormView } from './sort-form';
 
@@ -61,6 +61,12 @@ export const OfferCardList: FC<OfferCardListProps> = ({ offers, setActivePoint, 
     setActivePoint(undefined);
   };
 
+  const handleFavoriteClick = useCallback((id: string, status: boolean) => {
+    dispatch(updateOfferFavoriteStatus({id, status})).then((result) => {
+      dispatch(updateSingleOfferFavorite({id, status: result.payload as boolean}));
+    });
+  }, [dispatch]);
+
   return (
     <section className={classNames(getOfferCardClassName(prefix, 'places'), 'places')}>
       <h2 className="visually-hidden">Places</h2>
@@ -78,6 +84,7 @@ export const OfferCardList: FC<OfferCardListProps> = ({ offers, setActivePoint, 
             onMouseEnter={() => handleCardFocus(card.id)}
             onMouseLeave={() => handleCardUnfocus()}
             offer={card}
+            onFavoriteClick={handleFavoriteClick}
           />
         ))}
       </div>

@@ -8,7 +8,7 @@ import { Point } from '../types/point';
 import { URL_MARKER_CURRENT, URL_MARKER_DEFAULT } from '../const';
 import classNames from 'classnames';
 
-interface MapProps {
+type MapProps = {
   city: City;
   points: Point[];
   selectedPoint: Point | undefined;

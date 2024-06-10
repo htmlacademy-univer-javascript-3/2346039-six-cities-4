@@ -2,7 +2,7 @@ import { createReducer } from '@reduxjs/toolkit';
 import { CITIES } from '../const';
 import { Offer } from '../types/offer';
 import { City } from '../types/city';
-import { addToFavorites, removeFromFavorites, signIn, signOut, updateAuthStatus, updateCity, updateFavorites, updateFavoritesLoadingStatus, updateLoading, updateOffers, updateSortMethod } from './action';
+import { addToFavorites, removeFromFavorites, signIn, signOut, updateAuthStatus, updateCity, updateFavorites, updateFavoritesLoadingStatus, updateLoading, updateOffers, updateSingleOfferFavorite, updateSortMethod } from './action';
 import { SortMethod } from '../types/sort-method';
 import { AuthStatus } from '../types/auth-status';
 import { User } from '../types/user';
@@ -69,5 +69,11 @@ export const reducer = createReducer(initState, (builder) => {
     })
     .addCase(updateFavoritesLoadingStatus, (state, action) => {
       state.favoritesLoading = action.payload;
+    })
+    .addCase(updateSingleOfferFavorite, (state, action) => {
+      const offer = state.offers.find((item) => item.id === action.payload.id);
+      if (offer) {
+        offer.isFavorite = action.payload.status;
+      }
     });
 });

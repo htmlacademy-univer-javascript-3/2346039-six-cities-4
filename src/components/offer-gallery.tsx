@@ -1,7 +1,7 @@
 import { FC } from 'react';
 import { OfferDetail } from '../types/offer-detail';
 
-interface OfferGalleryProps {
+type OfferGalleryProps = {
   images: OfferDetail['images'];
   alt: string;
 }

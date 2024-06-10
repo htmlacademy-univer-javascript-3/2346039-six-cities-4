@@ -1,11 +1,13 @@
 /* eslint-disable no-console */
-import { ChangeEvent, FC, useState } from 'react';
-import { Review } from '../../../types/review';
+import { ChangeEvent, FC, FormEvent, useEffect, useState } from 'react';
+import { Comment } from '../../../types/comment';
 
-type DraftReview = Omit<Review, 'id' | 'date' | 'user'>
+type WriteReviewFormProps = {
+  onSend: (comment: Comment) => void;
+}
 
-export const WriteReviewForm: FC = () => {
-  const [review, setReview] = useState<DraftReview>({
+export const WriteReviewForm: FC<WriteReviewFormProps> = ({onSend}) => {
+  const [review, setReview] = useState<Comment>({
     rating: 0,
     comment: ''
   });
@@ -16,12 +18,27 @@ export const WriteReviewForm: FC = () => {
     const key = e.target.name;
     const value = e.target.value;
 
-    setReview({
-      ...review,
-      [key]: value
-    });
+    if (key === 'rating') {
+      setReview({
+        ...review,
+        [key]: Number(value)
+      });
+    } else {
+      setReview({
+        ...review,
+        [key]: String(value)
+      });
+    }
+  };
 
+  useEffect(() => {
     setButtonDisabled(review.comment.length < 50 || review.rating === 0);
+  }, [review.rating, review.comment]);
+
+  const handleFormSubmit = (e: FormEvent) => {
+    e.preventDefault();
+    onSend(review);
+    setReview((prev) => ({...prev, comment: ''}));
   };
 
   return (
@@ -138,10 +155,7 @@ export const WriteReviewForm: FC = () => {
           className="reviews__submit form__submit button"
           type="submit"
           disabled={buttonDisabled}
-          onClick={(e) => {
-            e.preventDefault();
-            console.log('Sent review: ', review);
-          }}
+          onClick={handleFormSubmit}
         >
                         Submit
         </button>

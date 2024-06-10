@@ -1,6 +1,8 @@
-import { FC } from 'react';
+import { FC, useCallback } from 'react';
 import { Offer } from '../types/offer';
 import { OfferCard } from './offer-card';
+import { updateOfferFavoriteStatus, updateSingleOfferFavorite } from '../store/action';
+import { useAppDispatch } from '../store/helpers';
 
 type FavoritesCardListProps = {
     offers: Offer[];
@@ -10,6 +12,14 @@ export const FavoritesCardList: FC<FavoritesCardListProps> = ({ offers }) => {
   const places = offers
     .map((offer) => offer.city.name)
     .filter((value, index, self) => self.indexOf(value) === index);
+
+  const dispatch = useAppDispatch();
+
+  const handleFavoriteClick = useCallback((id: string, status: boolean) => {
+    dispatch(updateOfferFavoriteStatus({id, status})).then((result) => {
+      dispatch(updateSingleOfferFavorite({id, status: result.payload as boolean}));
+    });
+  }, [dispatch]);
 
   return (
     <div className="favorites__list">
@@ -28,7 +38,7 @@ export const FavoritesCardList: FC<FavoritesCardListProps> = ({ offers }) => {
             </div>
             <div className="favorites__places">
               {filteredOffers.map((offer) => (
-                <OfferCard key={offer.id} offer={offer} prefix={'favorites'} />
+                <OfferCard key={offer.id} offer={offer} prefix={'favorites'} onFavoriteClick={handleFavoriteClick} />
               ))}
             </div>
           </li>

@@ -5,7 +5,7 @@ import { AxiosInstance } from 'axios';
 export const useAppDispatch: () => AppDispatch = useDispatch;
 export const useAppSelector: TypedUseSelectorHook<State> = useSelector;
 
-export interface ThunkConfig {
+export type ThunkConfig = {
     state: State;
     dispatch: AppDispatch;
     extra: AxiosInstance;

@@ -10,9 +10,10 @@ type OfferCardProps = {
     onMouseEnter?: () => void;
     onMouseLeave?: () => void;
     prefix?: string;
+    onFavoriteClick: (id: string, status: boolean) => void;
 }
 
-export const OfferCard: FC<OfferCardProps> = ({ offer, onMouseEnter, onMouseLeave, prefix }) => (
+export const OfferCard: FC<OfferCardProps> = ({ offer, onMouseEnter, onMouseLeave, prefix, onFavoriteClick }) => (
   <article
     className={`${getOfferCardClassName(prefix, 'card')} place-card`}
     onMouseEnter={onMouseEnter}
@@ -50,6 +51,7 @@ export const OfferCard: FC<OfferCardProps> = ({ offer, onMouseEnter, onMouseLeav
             offer.isFavorite ? 'place-card__bookmark-button--active' : ''
           }`}
           type="button"
+          onClick={() => onFavoriteClick(offer.id, !offer.isFavorite)}
         >
           <svg className="place-card__bookmark-icon" width="18" height="19">
             <use xlinkHref="#icon-bookmark"></use>

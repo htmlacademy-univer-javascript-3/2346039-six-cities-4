@@ -3,7 +3,7 @@ import { Review } from '../../../types/review';
 import { Rating } from '../../../components/rating';
 import { formatDateToDateString, formatDateToMonthYear } from '../../../utils/datetime';
 
-interface ReviewItemProps {
+type ReviewItemProps = {
   review: Review;
 }
 

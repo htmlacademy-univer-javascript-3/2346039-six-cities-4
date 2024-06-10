@@ -1,18 +1,15 @@
-import { User } from '../types/user.ts';
-import { City } from '../types/city.ts';
+import { City } from './city';
+import { LocationType } from './location';
 
 export type Offer = {
     id: string;
-    image: string;
-    city: City;
     title: string;
-    description: string;
-    isPremium: boolean;
     type: string;
-    rating: number;
-    bedrooms: number;
-    maxAdults: number;
     price: number;
-    owner: User;
+    city: City;
+    location: LocationType;
     isFavorite: boolean;
-};
+    isPremium: boolean;
+    rating: number;
+    previewImage: string;
+}

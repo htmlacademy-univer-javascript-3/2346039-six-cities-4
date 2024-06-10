@@ -1,9 +1,9 @@
-import { User } from '../types/user.ts';
+import { PublicUser } from './public-user';
 
 export type Review = {
-  id: string;
-  date: string;
-  user: User;
-  comment: string;
-  rating: number;
-}
+    id: string;
+    date: string;
+    user: PublicUser;
+    comment: string;
+    rating: number;
+};

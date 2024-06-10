@@ -1,6 +1,6 @@
-import { Location } from '../types/location.ts';
+import { LocationType } from './location';
 
 export type City = {
-  name: string;
-  location: Location;
-}
+    name: string;
+    location: LocationType;
+};

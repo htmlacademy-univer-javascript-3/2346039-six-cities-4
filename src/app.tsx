@@ -9,13 +9,17 @@ import { AppRoute } from './types/app-route';
 import { NotFoundPage } from './pages/service/not-found-page';
 import { MainLayout } from './layouts/main-layout';
 import { useAppDispatch } from './store/helpers';
-import { fetchOffersAsync } from './store/action';
+import { fetchAuth, fetchFavorites, fetchOffersAsync } from './store/action';
 
 
 export const App: FC = () => {
   const dispatch = useAppDispatch();
 
-  dispatch(fetchOffersAsync());
+  [
+    fetchOffersAsync(),
+    fetchAuth(),
+    fetchFavorites()
+  ].forEach(dispatch);
 
   return (
     <BrowserRouter>
@@ -36,7 +40,7 @@ export const App: FC = () => {
         <Route path={AppRoute.Favorites} element={
           <PrivateRoute user={null}>
             <MainLayout user={undefined} favoriteCount={0} >
-              <FavoritesPage offers={[]} favorites={[]} />
+              <FavoritesPage />
             </MainLayout>
           </PrivateRoute>
         }

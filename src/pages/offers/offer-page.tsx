@@ -1,5 +1,5 @@
 /* eslint-disable react/no-array-index-key */
-import { FC, useMemo, useState } from 'react';
+import { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { Navigate, useParams } from 'react-router-dom';
 import { WriteReviewForm } from './components/write-review-form';
 import { Point } from '../../types/point';
@@ -9,11 +9,19 @@ import { OfferCard } from '../../components/offer-card';
 import { Map } from '../../components/map';
 import { useGetOfferDetail } from '../../hooks/use-get-offer-detail';
 import { Spinner } from '../../components/spinner';
+import { useAppDispatch, useAppSelector } from '../../store/helpers';
+import { selectAuthStatus } from '../../store/selectors';
+import { updateOfferFavoriteStatus } from '../../store/action';
+import { AuthStatus } from '../../types/auth-status';
 
 export const OfferPage: FC = () => {
   const { id } = useParams();
 
   const {offerDetail: offer, reviews, nearbyOffers, isLoading} = useGetOfferDetail({ id: id ?? '' });
+
+  const authStatus = useAppSelector(selectAuthStatus);
+
+  const dispatch = useAppDispatch();
 
   const points = useMemo<Point[]>(
     () =>
@@ -26,6 +34,18 @@ export const OfferPage: FC = () => {
     [nearbyOffers]
   );
   const [activePoint, setActivePoint] = useState<Point>();
+
+  const [isOfferInFavorites, setIsOfferInFavorites] = useState<boolean>(offer?.isFavorite ?? false);
+
+  useEffect(() => {
+    setIsOfferInFavorites(offer?.isFavorite ?? false);
+  }, [offer?.isFavorite]);
+
+  const handleFavoriteClick = useCallback(() => {
+    dispatch(updateOfferFavoriteStatus({id: id ?? '', status: !isOfferInFavorites})).then((result) => {
+      setIsOfferInFavorites(result.payload as boolean);
+    });
+  }, [id, isOfferInFavorites, dispatch]);
 
   if (isLoading) {
     return (
@@ -70,11 +90,14 @@ export const OfferPage: FC = () => {
                 <h1 className="offer__name">
                   {offer.title}
                 </h1>
-                <button className={`offer__bookmark-button ${offer.isFavorite ? 'offer__bookmark-button--active' : ''} button`} type="button">
+                <button className={`offer__bookmark-button ${isOfferInFavorites ? 'offer__bookmark-button--active' : ''} button`} type="button" onClick={() => {
+                  handleFavoriteClick();
+                }}
+                >
                   <svg className="offer__bookmark-icon" width="31" height="33">
                     <use xlinkHref="#icon-bookmark"></use>
                   </svg>
-                  <span className="visually-hidden">{offer.isFavorite ? 'In bookmarks' : 'To bookmarks'}</span>
+                  <span className="visually-hidden">{isOfferInFavorites ? 'In bookmarks' : 'To bookmarks'}</span>
                 </button>
               </div>
               <div className="offer__rating rating">
@@ -130,7 +153,9 @@ export const OfferPage: FC = () => {
               </div>
               <section className="offer__reviews reviews">
                 <ReviewsList reviews={reviews} />
-                <WriteReviewForm />
+                {
+                  authStatus === AuthStatus.LOGGED_IN && (<WriteReviewForm />)
+                }
               </section>
             </div>
           </div>

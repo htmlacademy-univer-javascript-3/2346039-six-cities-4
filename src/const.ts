@@ -56,3 +56,7 @@ export const CITIES: City[] = [
     }
   },
 ];
+
+export const API_ENDPOINT = 'https://14.design.htmlacademy.pro/six-cities';
+export const LOCAL_STORAGE_TOKEN = 'six-cities-token';
+export const TOKEN_HEADERNAME = 'X-Token';

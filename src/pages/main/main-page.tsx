@@ -2,10 +2,11 @@ import { FC, useMemo, useState } from 'react';
 import { OfferCardList } from '../../components/offer-card-list';
 import { Point } from '../../types/point';
 import { Map } from '../../components/map';
-import { selectCurrentCity, selectCurrentOffers } from '../../store/selectors';
+import { selectCurrentCity, selectCurrentOffers, selectLoading } from '../../store/selectors';
 import { useAppSelector } from '../../store/helpers';
 import { CityPicker } from '../../components/city-picker';
 import { CITIES } from '../../const';
+import { Spinner } from '../../components/spinner';
 
 export const MainPage: FC = () => {
   const [activePoint, setActivePoint] = useState<Point>();
@@ -23,6 +24,12 @@ export const MainPage: FC = () => {
       })) ?? [],
     [offers]
   );
+
+  const isLoading = useAppSelector(selectLoading);
+
+  if (isLoading) {
+    return <Spinner />;
+  }
 
   return (
     <div className="page page--gray page--main">

@@ -7,43 +7,36 @@ import { PrivateRoute } from './components/private-route';
 import { FavoritesPage } from './pages/favorites/favorites-page';
 import { AppRoute } from './types/app-route';
 import { NotFoundPage } from './pages/service/not-found-page';
-import { Offer } from './types/offer';
-import { OfferDetail } from './types/offer-detail';
-import { Review } from './types/review';
-import { User } from './types/user';
 import { MainLayout } from './layouts/main-layout';
-import { Provider } from 'react-redux';
-import { store } from './store';
+import { useAppDispatch } from './store/helpers';
+import { fetchOffersAsync } from './store/action';
 
-type AppProps = {
-    offers: Offer[];
-    offersDetail: OfferDetail[];
-    reviewsMap: Map<string, Review[]>;
-    user: User;
-    favorites: string[];
-}
 
-export const App: FC<AppProps> = ({ offers, offersDetail, reviewsMap, user, favorites }) => (
-  <Provider store={store}>
+export const App: FC = () => {
+  const dispatch = useAppDispatch();
+
+  dispatch(fetchOffersAsync());
+
+  return (
     <BrowserRouter>
       <Routes>
         <Route path={AppRoute.Index} element={
-          <MainLayout color="gray" user={user} favoriteCount={favorites.length}>
+          <MainLayout color="gray" user={undefined} favoriteCount={0}>
             <MainPage />
           </MainLayout>
         }
         />
         <Route path={AppRoute.Login} element={<LoginPage />} />
         <Route path={AppRoute.Offer} element={
-          <MainLayout user={user} favoriteCount={favorites.length}>
-            <OfferPage offerDetails={offersDetail} reviewsMap={reviewsMap} />
+          <MainLayout user={undefined} favoriteCount={0}>
+            <OfferPage />
           </MainLayout>
         }
         />
         <Route path={AppRoute.Favorites} element={
-          <PrivateRoute user={user}>
-            <MainLayout user={user} favoriteCount={favorites.length} >
-              <FavoritesPage offers={offers} favorites={favorites} />
+          <PrivateRoute user={null}>
+            <MainLayout user={undefined} favoriteCount={0} >
+              <FavoritesPage offers={[]} favorites={[]} />
             </MainLayout>
           </PrivateRoute>
         }
@@ -51,6 +44,5 @@ export const App: FC<AppProps> = ({ offers, offersDetail, reviewsMap, user, favo
         <Route path="*" element={<NotFoundPage />}/>
       </Routes>
     </BrowserRouter>
-  </Provider>
-);
-
+  );
+};

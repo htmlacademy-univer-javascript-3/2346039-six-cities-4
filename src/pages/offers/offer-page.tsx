@@ -1,45 +1,45 @@
 /* eslint-disable react/no-array-index-key */
 import { FC, useMemo, useState } from 'react';
 import { Navigate, useParams } from 'react-router-dom';
-import { OfferDetail } from '../../types/offer-detail';
-import { Review } from '../../types/review';
 import { WriteReviewForm } from './components/write-review-form';
-import { MOCK_OFFERS } from '../../mock/offers';
 import { Point } from '../../types/point';
 import { OfferGallery } from '../../components/offer-gallery';
 import { ReviewsList } from './components/review-list';
 import { OfferCard } from '../../components/offer-card';
 import { Map } from '../../components/map';
+import { useGetOfferDetail } from '../../hooks/use-get-offer-detail';
+import { Spinner } from '../../components/spinner';
 
-type OfferPageProps = {
-    offerDetails: OfferDetail[];
-    reviewsMap: Map<string, Review[]>;
-}
-
-export const OfferPage: FC<OfferPageProps> = ({ offerDetails, reviewsMap }) => {
+export const OfferPage: FC = () => {
   const { id } = useParams();
-  const offer = offerDetails.find((it) => String(it.id) === id);
 
-  // TODO: Remove direct mock data access
-  const offers = MOCK_OFFERS.slice(0, 2);
+  const {offerDetail: offer, reviews, nearbyOffers, isLoading} = useGetOfferDetail({ id: id ?? '' });
 
   const points = useMemo<Point[]>(
     () =>
-      offers?.map((item) => ({
+      nearbyOffers?.map((item) => ({
         id: item.id,
         latitude: item.location.latitude,
         longitude: item.location.longitude,
         zoom: item.location.zoom,
       })) ?? [],
-    [offers]
+    [nearbyOffers]
   );
   const [activePoint, setActivePoint] = useState<Point>();
 
-  if (!offer) {
+  if (isLoading) {
+    return (
+      <Spinner />
+    );
+  }
+
+  if (!offer && !isLoading) {
     return <Navigate to="/not_found" />;
   }
 
-  const reviews = reviewsMap.get(offer.id);
+  if (!offer) {
+    return null;
+  }
 
   const handleCardMouseEnter = (placeId: string) => {
     const point = points.find((p) => p.id === placeId);
@@ -135,25 +135,29 @@ export const OfferPage: FC<OfferPageProps> = ({ offerDetails, reviewsMap }) => {
             </div>
           </div>
         </section>
-        <div className="container">
-          <section className="near-places places">
-            <Map city={offer.city} points={points} selectedPoint={activePoint} className='offer__map' />
-            <h2 className="near-places__title">
+        {
+          nearbyOffers && nearbyOffers.length > 0 && (
+            <div className="container">
+              <section className="near-places places">
+                <Map city={offer.city} points={points} selectedPoint={activePoint} className='offer__map' />
+                <h2 className="near-places__title">
               Other places in the neighbourhood
-            </h2>
-            <div className="near-places__list places__list">
-              {offers.map((item) => (
-                <OfferCard
-                  key={item.id}
-                  prefix={'near-places'}
-                  onMouseEnter={() => handleCardMouseEnter(item.id)}
-                  onMouseLeave={handleCardMouseLeave}
-                  offer={item}
-                />
-              ))}
+                </h2>
+                <div className="near-places__list places__list">
+                  {nearbyOffers.map((item) => (
+                    <OfferCard
+                      key={item.id}
+                      prefix={'near-places'}
+                      onMouseEnter={() => handleCardMouseEnter(item.id)}
+                      onMouseLeave={handleCardMouseLeave}
+                      offer={item}
+                    />
+                  ))}
+                </div>
+              </section>
             </div>
-          </section>
-        </div>
+          )
+        }
       </main>
     </div>
   );

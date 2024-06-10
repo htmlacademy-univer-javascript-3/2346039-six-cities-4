@@ -10,6 +10,9 @@
     "test": "vitest --passWithNoTests"
   },
   "dependencies": {
+    "@emotion/react": "^11.11.4",
+    "@emotion/styled": "^11.11.5",
+    "@mui/material": "^5.15.19",
     "@reduxjs/toolkit": "1.9.7",
     "axios": "1.5.1",
     "classnames": "2.3.2",
